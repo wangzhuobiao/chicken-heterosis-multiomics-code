@@ -1,4 +1,4 @@
-# Article 1 analysis scripts
+# Article analysis scripts
 
 Use Python 3.12 with `requirements.txt`, R 4.6.0 with the packages listed in `r_package_versions.tsv`, and a separate Python 3.13 environment with `requirements-mofa.txt` for MOFA. The RNA enrichment step also uses `clusterProfiler`.
 
