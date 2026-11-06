@@ -1,0 +1,41 @@
+{
+  "views": [
+    "Duodenum_RNA",
+    "Plasma_metabolome",
+    "Cecal_metagenome"
+  ],
+  "model": {
+    "factors": 6,
+    "spikeslab_factors": false,
+    "spikeslab_weights": true,
+    "ard_factors": false,
+    "ard_weights": true
+  },
+  "data": {
+    "scale_views": false,
+    "scale_groups": false,
+    "center_groups": true,
+    "use_float32": false
+  },
+  "training": {
+    "iter": 1000,
+    "seed": 20260726,
+    "convergence_mode": "medium",
+    "dropR2": 0.01,
+    "gpu_mode": false,
+    "startELBO": 1,
+    "freqELBO": 5,
+    "startSparsity": 50,
+    "startDrop": 1,
+    "freqDrop": 1,
+    "nostop": false,
+    "weight_views": false,
+    "verbose": true,
+    "quiet": false
+  },
+  "likelihoods": [
+    "gaussian",
+    "gaussian",
+    "gaussian"
+  ]
+}

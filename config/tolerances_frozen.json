@@ -1,0 +1,36 @@
+{
+  "W_Z": {
+    "atol": 1e-10,
+    "rtol": 1e-08
+  },
+  "phenotype_statistics": {
+    "atol": 1e-10,
+    "rtol": 1e-08
+  },
+  "variance_percent_vs_Stage7_helper": {
+    "atol": 1e-05,
+    "rtol": 0
+  },
+  "variance_percent_internal": {
+    "atol": 1e-08,
+    "rtol": 1e-10
+  },
+  "ELBO_vs_printed_log": {
+    "atol": 0.0051,
+    "rtol": 0
+  },
+  "ELBO_delta_vs_printed_log": {
+    "atol": 0.00051,
+    "rtol": 0
+  },
+  "printed_relative_delta_percent": {
+    "atol": 5.1e-09,
+    "rtol": 0
+  },
+  "sample_feature_IDs": "exact ordered equality",
+  "backend_input": "bitwise array equality including dtype",
+  "iteration_and_factor_count": "exact equality at each logged iteration",
+  "significance_states": "exact equality at nominal .05; within/global .10 and .05",
+  "factor_match": "Hungarian maximum sum absolute Pearson score correlation; never phenotype-based",
+  "reasons": "W/Z and association tolerances cover floating point roundoff only; Stage7 variance helper used float32 centering before promotion, so percent tolerance1e-5 fixed for that helper; printed ELBO tolerances reflect original log precision, not a full-precision old ELBO array"
+}

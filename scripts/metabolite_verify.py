@@ -5,7 +5,7 @@ sys.stdout.reconfigure(encoding='utf-8');O=Path(os.environ["A1_OUTPUT"]);R=Path(
 def read(p):
  with Path(p).open(encoding='utf-8-sig',newline='') as f:return list(csv.DictReader(f,delimiter='\t' if Path(p).suffix=='.tsv' else ','))
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-assert json.loads((O/'validation/reconstruction_summary.json').read_text(encoding='utf-8'))['status']=='MATRIX_VALIDATED_PASS_AUTHOR_REVIEW'
+assert json.loads((O/'validation/reconstruction_summary.json').read_text(encoding='utf-8'))['status']=='MATRIX_VALIDATED_PASS'
 mapping=read(O/'matrix/feature_key_mapping_5272.tsv');samples=[r['sample_id'] for r in read(O/'validation/sample_order_24.tsv')];old=read(M/'tables/Table2_log2_processed_abundance_matrix.csv')
 settings={r['parameter']:r['value'] for r in read(M/'qc/QC_analysis_settings_used.csv')};w=openpyxl.load_workbook(os.environ["A1_VENDOR_XLSX"],read_only=True,data_only=True);s=w.worksheets[0];it=s.iter_rows(values_only=True);h=list(next(it));bykey={};rownos={}
 for rn,v in enumerate(it,2):

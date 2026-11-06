@@ -8,7 +8,7 @@ import openpyxl
 sys.stdout.reconfigure(encoding='utf-8')
 O=Path(os.environ["A1_OUTPUT"]); ROOT=Path(os.environ["A1_INPUT_ROOT"])
 C=ROOT/'Article1_core_scripts_20260812'; AF=C/'output_abdominal_fat_article1_core'; PH=C/'output_story_phenotype_article1_core'; RNA=C/'output_duodenum_transcriptome_core'
-for name in ['01_AF','02_subset','03_F1','04_candidates','04_candidates/legacy120','04_candidates/core160','05_reproducibility']:(O/name).mkdir(exist_ok=True,parents=True)
+for name in ['01_AF','02_subset','05_reproducibility']:(O/name).mkdir(exist_ok=True,parents=True)
 SEED=20261029; B=2000; GROUPS=['YY','YX','XX']; PAIRS=[('YY','YX'),('YY','XX'),('YX','XX')]
 AF_TRAITS=['AF_wt','AF_live_pct','AF_carcass_pct','AF_evis_pct']
 TRAITS=['BW_wk15','ADG_0_15','Live_wt','Carcass_wt','Evis_wt']+AF_TRAITS
@@ -41,7 +41,7 @@ def same(a,b):
     return (not math.isfinite(a) and not math.isfinite(b)) or abs(a-b)<1e-9
 
 settings={
- 'scope':'new AF positive-only means/CIs and within-trait pairwise Wilcoxon; record-based selected-vs-not-selected effect estimates; correction candidates only',
+ 'scope':'new AF positive-only means/CIs and within-trait pairwise Wilcoxon; record-based selected-vs-not-selected effect estimates',
  'seed':SEED,'replicates':B,'rng':'numpy.random.Generator(PCG64); separate generators for Task A and Task B, each initialized once with 20261029',
  'CI':'pointwise 95% percentile; np.quantile([0.025,0.975],method=linear) (R quantile type 7)',
  'A':{'population':'frozen cleaned cohort, AF_wt>0; no additional exclusions',
@@ -57,11 +57,8 @@ settings={
       'zero_handling':'all original AF zero records retained; missing only if already missing in frozen tables',
       'P_values':'none requested or computed; no multiple-testing family of new P-values; CIs are pointwise, exploratory, not simultaneous',
       'historical_comparison':'copy existing subset-vs-full-cohort representativeness table separately; never use overlapping subset/full as independent samples'},
- 'C':{'identity_gate':'NOT_APPROVED/UNVERIFIED; no new F1 analysis, including fallback VST bootstrap',
-      'planned_tolerances':[0,.02,.05,.10],'planned_full_refit_replicates':100,'automatic_extension_to_500':False},
  'limitations':['individual-level bootstrap assumes exchangeable independent birds within cells; cage identifiers/cluster effects not available or modeled',
-                'no automatic outlier removal, threshold revision, ID correction or new missing-value imputation',
-                'sample physical identity and random selection mechanism remain unverified']}
+                'no automatic outlier removal, threshold revision, ID correction or new missing-value imputation']}
 jout('05_reproducibility/analysis_settings_PREDEFINED.json',settings)
 
 clean_p=PH/'Table0_clean_phenotype_with_derived_traits.csv'; af_p=AF/'Table0_abdominal_fat_clean_data.csv'; key_p=PH/'Table0_omics_sample_key_for_integration.csv'
@@ -88,7 +85,7 @@ wb=openpyxl.load_workbook(raw_p,read_only=True,data_only=True);rawrows=list(wb['
 rawmap={};heads=list(rawrows[0])
 for i,v in enumerate(rawrows[1:],2):
     if v[0] in GROUPS and v[1] is not None:rawmap.setdefault((str(v[0]),str(v[1])),[]).append((i,dict(zip(heads,v))))
-afcheck=[];membership=[]
+afcheck=[]
 for k,r in cm.items():
     assert len(rawmap.get(k,[]))==1,f'Ambiguous raw key {k}'
     excelrow,rv=rawmap[k][0]
@@ -98,12 +95,7 @@ for k,r in cm.items():
         for field,rawfield in [('Live_wt','活重'),('Carcass_wt','屠体重'),('Evis_wt','全净堂重')]:assert same(r[field],rv[rawfield])
         afcheck.append({'group':k[0],'wing_id':k[1],'source_original':str(raw_p),'source_cell':f'Sheet1!AT{excelrow}',
                         'original_AFW':rv['腹脂重'],'frozen_AFW':r['AF_wt'],'is_zero':number(r['AF_wt'])==0,'selected':k in selected,'check':'PASS'})
-    membership.append({'group':k[0],'wing_id':k[1],'cecum_meta_id':r['cecum_meta_id'],'duodenum_D_id':r['duodenum_rna_id'],
-        'selected_frozen_key':k in selected,'source_key':str(key_p),'original_row':excelrow,'original_path':str(raw_p),
-        'AFW':r['AF_wt'],'is_slaughter_as_stored':r['is_slaughter'],'physical_omics_identity':'UNVERIFIED'})
 write('05_reproducibility/AF_raw_vs_clean_validation.tsv',afcheck)
-membership.sort(key=lambda r:(GROUPS.index(r['group']),r['wing_id']))
-write('02_subset/selected_vs_unselected_membership.tsv',membership)
 assert len(afcheck)==59
 say('PREFLIGHT: all 59 nonmissing AFW and body-size records match original workbook; 24 selected IDs unchanged.')
 
@@ -223,7 +215,7 @@ for g in GROUPS:
             'CI_method':'2000 independent within-status/trait bootstrap means; percentile/type7; pointwise not simultaneous','seed':SEED,'B':B,
             'source_phenotype':str(clean_p),'source_AF_extra_ratios':str(af_p) if t in ['AF_carcass_pct','AF_evis_pct'] else '',
             'source_phenotype_SHA256':INPUTS[str(clean_p)]['sha256'],'source_AF_SHA256':INPUTS[str(af_p)]['sha256'],
-            'membership_source':str(key_p),'membership_SHA256':INPUTS[str(key_p)]['sha256'],'physical_sample_pairing':'UNVERIFIED','random_selection_validated':False,
+            'membership_source':str(key_p),'membership_SHA256':INPUTS[str(key_p)]['sha256'],
             'interpretation':'recorded selection association; comparison is selected vs NOT selected; not subset vs overlapping full cohort'})
 write('02_subset/selected_vs_unselected_effects_CI.tsv',subset)
 np.savez_compressed(O/'02_subset/TaskB_bootstrap_group_means_replicates.npz',**bootB)

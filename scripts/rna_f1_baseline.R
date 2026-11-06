@@ -228,16 +228,6 @@ zscore_rows <- function(mat) {
   ans
 }
 
-coalesce_character <- function(...) {
-  values <- list(...)
-  out <- rep(NA_character_, max(vapply(values, length, integer(1))))
-  for (x in values) {
-    x <- rep_len(as.character(x), length(out))
-    use <- is.na(out) | out == ""
-    out[use] <- x[use]
-  }
-  out
-}
 
 # ==============================================================================
 # 3. Locate and read inputs
@@ -322,23 +312,7 @@ meta <- meta_raw %>%
   filter(!is.na(sample_id), sample_id != "") %>%
   distinct(sample_id, .keep_all = TRUE)
 
-# Plot aliases may be supplied in an authorized local TSV.
-alias_file <- Sys.getenv("A1_RNA_LABEL_MAP")
-alias_columns <- c("sample_id", "original_sample_id", "plot_label")
-duodenum_label_map <- tibble::tibble(sample_id=character(), original_sample_id=character(), plot_label=character())
-if (nzchar(alias_file)) {
-  duodenum_label_map <- read.delim(alias_file, colClasses="character", check.names=FALSE)
-  stopifnot(identical(names(duodenum_label_map), alias_columns),
-            all(complete.cases(duodenum_label_map)), all(nzchar(as.matrix(duodenum_label_map))),
-            !anyDuplicated(duodenum_label_map$sample_id), all(duodenum_label_map$sample_id %in% meta$sample_id))
-}
-
-meta <- meta %>%
-  left_join(duodenum_label_map, by = "sample_id") %>%
-  mutate(
-    original_sample_id = coalesce_character(original_sample_id, sample_id),
-    plot_label = coalesce_character(plot_label, sample_id)
-  )
+meta <- meta %>% mutate(plot_label = sample_id)
 
 unexpected_groups <- setdiff(unique(meta$group), c("YY", "YX", "XX"))
 if (length(unexpected_groups) > 0) {
@@ -387,7 +361,6 @@ if (any(group_n == 0)) stop("At least one required group has zero matched sample
 
 sample_qc <- tibble(
   sample_id = meta$sample_id,
-  original_sample_id = meta$original_sample_id,
   plot_label = meta$plot_label,
   group = as.character(meta$group),
   present_in_upstream_vst = TRUE,
@@ -398,7 +371,6 @@ upstream_absent_qc <- meta_all %>%
   filter(sample_id %in% missing_in_vst) %>%
   transmute(
     sample_id,
-    original_sample_id,
     plot_label,
     group = as.character(group),
     present_in_upstream_vst = FALSE,
@@ -406,10 +378,6 @@ upstream_absent_qc <- meta_all %>%
   )
 
 write_csv_safe(bind_rows(sample_qc, upstream_absent_qc), "QC_samples_used_and_upstream_absent.csv")
-write_csv_safe(
-  meta %>% dplyr::select(sample_id, original_sample_id, plot_label, group),
-  "QC_sample_id_label_mapping_used.csv"
-)
 
 message("Samples used: YY = ", group_n[["YY"]],
         ", YX = ", group_n[["YX"]],

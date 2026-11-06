@@ -1,0 +1,58 @@
+{
+  "data": {
+    "center_groups": true,
+    "scale_views": false,
+    "scale_groups": false,
+    "views_names": [
+      "Duodenum_RNA",
+      "Plasma_metabolome",
+      "Cecal_metagenome"
+    ],
+    "groups_names": [
+      "group1"
+    ],
+    "samples_groups": "['group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1'\n 'group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1'\n 'group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1' 'group1']"
+  },
+  "model": {
+    "spikeslab_factors": false,
+    "spikeslab_weights": true,
+    "ard_factors": false,
+    "ard_weights": true,
+    "factors": 6,
+    "likelihoods": [
+      "gaussian",
+      "gaussian",
+      "gaussian"
+    ]
+  },
+  "training": {
+    "maxiter": 1000,
+    "min_iter": 0,
+    "freqELBO": 5,
+    "start_elbo": 1,
+    "verbose": true,
+    "quiet": false,
+    "gpu_mode": false,
+    "drop": {
+      "min_r2": 0.01
+    },
+    "start_drop": 1,
+    "freq_drop": 1,
+    "convergence_mode": "medium",
+    "forceiter": false,
+    "start_sparsity": 50,
+    "stochastic": false,
+    "schedule": [
+      "Y",
+      "W",
+      "AlphaW",
+      "ThetaW",
+      "Z",
+      "Tau"
+    ],
+    "seed": 20260726,
+    "weight_views": false,
+    "outfile": null,
+    "save_interrupted": false
+  }
+}

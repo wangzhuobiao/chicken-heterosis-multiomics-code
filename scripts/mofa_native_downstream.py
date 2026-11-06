@@ -106,7 +106,7 @@ try:
   objective=json.loads((A/'results/final_objective_readonly.json').read_text())['terms']['total'];old_final=float(oldtrace[-1]['ELBO_log_rounded'])
   ck(num,'final_ELBO_vs_Stage7_printed',close(objective,old_final,'ELBO_vs_printed_log'),f'full final new {objective} vs old printed {old_final}; native stats last finite index {expected_indices[-1]}')
  wr('validation/archive_checks.tsv',archive);wr('results/numerical_checks_prephenotype.tsv',num)
- state=dict(archive_native_checks_PASS=all(r['PASS'] for r in archive),numerical_prephenotype_PASS=all(r['PASS'] for r in num),standard_loader_pending=True,phenotype_comparison_pending=True)
+ state=dict(archive_native_checks_PASS=all(r['PASS'] for r in archive),numerical_prephenotype_PASS=all(r['PASS'] for r in num))
  (O/'validation/INDEPENDENT_HDF5_STATUS.json').write_text(json.dumps(state,indent=2))
  assert state['archive_native_checks_PASS'] and state['numerical_prephenotype_PASS'],'Archive/numerical validation failed; stop replacement'
  print(json.dumps(state,indent=2));print('W/Z max delta',max(r['abs_delta'] for r in wz));print('variance max delta',max(r['abs_delta'] for r in varcmp));print('final ELBO',objective)

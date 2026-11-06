@@ -1,0 +1,21 @@
+{
+  "rscript": "Rscript",
+  "inputs": {
+    "A1_INPUT_ROOT": "authorized_inputs",
+    "A1_PHENOTYPE_XLSX": "authorized_inputs/phenotype.xlsx",
+    "A1_VENDOR_XLSX": "authorized_inputs/vendor_quantification.xlsx",
+    "A1_RNA_COUNTS": "authorized_inputs/gene_counts_matrix.txt",
+    "META_FILE": "authorized_inputs/05_duodenum_RNAseq/sample_metadata.txt",
+    "ANNOT_FILE": "authorized_inputs/reference.gtf",
+    "RNA_CORE_OUTDIR": "authorized_inputs/Article1_core_scripts_20260812/output_duodenum_transcriptome_core",
+    "A1_F1_RUN": "authorized_inputs/09_output/Article1_R2_Stage4_20261029/F1_trial100",
+    "A1_REPAIR": "runs/repair",
+    "A1_ASSOCIATIONS": "runs/associations",
+    "A1_MOFA_SELECTION": "runs/selection",
+    "A1_MOFA_INPUTS": "runs/preparation/inputs",
+    "A1_MOFA_REFERENCE": "authorized_inputs/09_output/Article1_R2_Stage7_20261029",
+    "A1_MOFA_ARCHIVE": "authorized_inputs/09_output/Article1_R2_Stage7_1_ArchiveRepair_20261029",
+    "A1_CW_RECORD_FILE": "",
+    "A1_MOFA_IDENTITY_FILE": ""
+  }
+}
