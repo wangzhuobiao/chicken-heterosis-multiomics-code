@@ -1,6 +1,6 @@
-# Article 1 R2 analysis code
+# Article analysis code
 
-This repository candidate contains the analysis code for a three-group chicken multi-omics study. The CW correction branch awaits author acceptance.
+This repository candidate contains the analysis code for a three-group chicken multi-omics study.
 
 ## Data access
 
